@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour
 
     public Hitbox HitboxPrefab;
 
+    public GotoPointer Gotopointer;
+
     public IEnumerator GameOver()
     {
         DisableAllCreaturesButThePlayer();
@@ -33,6 +35,8 @@ public class GameManager : MonoBehaviour
         }
 
         Time.timeScale = 0;
+        DisableAllCreaturesButThePlayer();
+
         Debug.Log("Game Over");
     }
 
@@ -57,6 +61,7 @@ public class GameManager : MonoBehaviour
             creature.Graphic.SpriteRenderer.enabled = false;
             creature.enabled = false;
 
+            Destroy(creature.gameObject);
         });
 
         List<Hitbox> listOfHitboxes = GameObject.FindObjectsOfType<Hitbox>().ToList();
@@ -66,6 +71,7 @@ public class GameManager : MonoBehaviour
     public void DisablePlayerControl()
     {
         Creature.Player.enabled = false;
+        Creature.Player.Graphic.SpriteRenderer.enabled = false;
     }
 
 }

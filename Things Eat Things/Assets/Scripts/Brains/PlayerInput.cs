@@ -59,23 +59,24 @@ public class PlayerInput : Brain
     void ClickedCreature(GameObject creature)
     {
         //todo: Interact with the creature if the creature is able to be interacted by you. If not, just move towards it
-        Debug.Log("Click " + creature.name);
 
+        Creature.Locomotor.TargetPosition = creature.transform.position;
+        GamePointer.Instance.Text.text = "";
     }
 
 
     void ClickedScenery(GameObject scenery)
     {
         //todo: ??
-        Debug.Log("Click Scenery");
+        // Debug.Log("Click Scenery");
     }
 
     void ClickedGround(Vector3 position)
     {
         if (isValidTerrainPoint(position))
         {
-            Debug.Log("Click Ground");
             Creature.Locomotor.TargetPosition = position;
+            GameManager.Instance.Gotopointer.Show(position + (Vector3.up * 0.1f));
         }
     }
 

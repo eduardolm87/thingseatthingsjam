@@ -30,7 +30,7 @@ public class Locomotor : MonoBehaviour
     }
 
 
-    const float MinimumDistanceToTargetPosition = 1f;
+    const float MinimumDistanceToTargetPosition = 1.1f;
 
 
     void Awake()
@@ -62,6 +62,11 @@ public class Locomotor : MonoBehaviour
         }
         else
         {
+            if (Creature.isPlayer && GameManager.Instance.Gotopointer.gameObject.activeInHierarchy)
+            {
+                GameManager.Instance.Gotopointer.Hide();
+            }
+
             Stop();
         }
 
@@ -119,7 +124,7 @@ public class Locomotor : MonoBehaviour
 
     public void JumpTowardsPoint(Vector3 zPoint, float zSpeed = 1)
     {
-        float jumpSpeed = 3f;
+        float jumpSpeed = 1f;
 
         Vector3 targetDir = (new Vector3(zPoint.x, transform.position.y, zPoint.z) - transform.position).normalized * zSpeed;
 
@@ -128,7 +133,7 @@ public class Locomotor : MonoBehaviour
         if (Creature.Cooldown == 0)
         {
             Rigidbody.velocity = targetDir;
-            Creature.Cooldown = 1;
+            Creature.Cooldown = 0.75f;
         }
     }
 

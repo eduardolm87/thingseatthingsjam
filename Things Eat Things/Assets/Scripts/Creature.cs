@@ -3,7 +3,11 @@ using System.Collections;
 
 public class Creature : MonoBehaviour
 {
+    public enum CREATURES { TinyLight, Rabbit, Wolf, Hunter };
+
     public static Creature Player;
+
+    public const float HurtingTime = 0.5f;
 
     const float RefreshFrequency = 0.25f;
 
@@ -14,6 +18,8 @@ public class Creature : MonoBehaviour
     public float attackDistance = 1;
     public float cooldownAfterAttack;
     public Locomotor.MovementTypes MovementType = Locomotor.MovementTypes.WALK;
+    public CREATURES CreatureType = CREATURES.Rabbit;
+    public string DisplayName = "???";
 
     [HideInInspector]
     public Graphic Graphic;
@@ -39,6 +45,9 @@ public class Creature : MonoBehaviour
             cooldown = Mathf.Clamp(value, 0, int.MaxValue);
         }
     }
+
+    [HideInInspector]
+    public bool isHurt = false;
 
     public bool isPlayer
     {
@@ -81,6 +90,12 @@ public class Creature : MonoBehaviour
 
     void Update()
     {
+        if (isHurt)
+        {
+            HurtTime(Time.deltaTime);
+            return;
+        }
+
         if (isPlayer)
         {
             Brain.GetInput();
@@ -90,8 +105,29 @@ public class Creature : MonoBehaviour
 
     void EfficientUpdate()
     {
+        if (isHurt)
+        {
+            HurtTime(RefreshFrequency);
+            return;
+        }
+
         Brain.GetInput();
         CooldownTime(RefreshFrequency);
+    }
+
+    void HurtTime(float zTimeElapsed)
+    {
+        if (Cooldown > 0)
+        {
+            if (Cooldown > zTimeElapsed)
+                Cooldown -= zTimeElapsed;
+            else
+            {
+                Cooldown = 0;
+                isHurt = false;
+                Graphic.SpriteRenderer.color = Color.white;
+            }
+        }
     }
 
     void CooldownTime(float zQuantity)
@@ -119,6 +155,9 @@ public class Creature : MonoBehaviour
 
     bool HitboxAffectsMe(Hitbox zHitbox)
     {
+        if (isHurt)
+            return false;
+
         if (isPlayer)
         {
             return zHitbox.Owner != this;
@@ -137,6 +176,12 @@ public class Creature : MonoBehaviour
         {
             Die();
         }
+        else
+        {
+            isHurt = true;
+            Cooldown = HurtingTime;
+            Graphic.SpriteRenderer.color = Color.red;
+        }
     }
 
     void Die()
@@ -150,5 +195,56 @@ public class Creature : MonoBehaviour
             //todo: effects
             Destroy(gameObject);
         }
+    }
+
+
+    void OnMouseEnter()
+    {
+        if (!isPlayer)
+        {
+            CreatureInteractionSuggestion(this);
+        }
+    }
+
+    void OnMouseExit()
+    {
+        GamePointer.Instance.Text.text = "";
+    }
+
+    public static void CreatureInteractionSuggestion(Creature zOtherCreature)
+    {
+        string suggestion = "";
+
+        switch (Player.CreatureType)
+        {
+            case CREATURES.Wolf:
+                switch (zOtherCreature.CreatureType)
+                {
+                    case CREATURES.Rabbit:
+                    case CREATURES.Hunter:
+                        suggestion = "Attack";
+                        break;
+                }
+
+                break;
+
+            case CREATURES.Hunter:
+                switch (zOtherCreature.CreatureType)
+                {
+                    case CREATURES.Rabbit:
+                    case CREATURES.Wolf:
+                    case CREATURES.Hunter:
+                        suggestion = "Shoot";
+                        break;
+                }
+
+                break;
+
+            default:
+                suggestion = "<color=gray>Move to " + zOtherCreature.name + "</color>";
+                break;
+        }
+
+        GamePointer.Instance.Text.text = suggestion;
     }
 }
