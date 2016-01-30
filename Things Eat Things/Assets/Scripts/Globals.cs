@@ -8,6 +8,10 @@ public static  class Globals{
 	public static GameObject gCamera;
 	public static GameObject gPlayer;
 	
+	public const int kCreaturesLayer = 9;
+	public const int kSceneryLayer = 8;
+	public const int kGroundLayer = 10;
+
 	public static void Init()
 	{
 		gCamera = GameObject.Find( "Camera" );

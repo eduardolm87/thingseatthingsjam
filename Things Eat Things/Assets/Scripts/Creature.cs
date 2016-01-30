@@ -7,6 +7,8 @@ public class Creature : MonoBehaviour {
 	public float speed;
 	public Vector3 targetPos;
 
+	public MonoBehaviour behaviour;
+
 
 	// Use this for initialization
 	void Start () {
