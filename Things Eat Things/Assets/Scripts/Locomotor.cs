@@ -33,6 +33,18 @@ public class Locomotor : MonoBehaviour
         {
             Stop();
         }
+
+
+		  if( Creature.Animator != null ){
+			  Vector3 velocity = Rigidbody.velocity;
+			  if ( velocity.x > 0.05f ){
+				  Creature.Animator.SetBool( "left", true );
+			  } else if ( velocity.x < 0.05f ){
+				  Creature.Animator.SetBool( "left", false );
+			  }
+
+			  Creature.Animator.SetBool( "running", velocity.magnitude > .2f );
+		  }
     }
 
 

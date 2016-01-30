@@ -16,11 +16,16 @@ public class Creature : MonoBehaviour
     [HideInInspector]
     public Brain Brain;
 
+    [HideInInspector]
+    public Animator Animator;
+
+
     void Awake()
     {
         Graphic = GetComponent<Graphic>();
         Locomotor = GetComponent<Locomotor>();
         Brain = GetComponent<Brain>();
+		  Animator = GetComponentInChildren<Animator>();
 
         if (Brain == null) Debug.LogError("Brain not found for " + gameObject.name);
 
