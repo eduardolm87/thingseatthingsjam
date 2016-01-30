@@ -1,23 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GameCam : MonoBehaviour {
-
+public class GameCam : MonoBehaviour 
+{
 	public float camSpeed;
 	Vector3 targetLookPos;
 	public float dist;
 
-	// Use this for initialization
-	void Start () {
 
-	}
-	
+    void Start()
+    {
+        //Vector3 playerPos = new Vector3()
 
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
+        //todo: Move instantly to the player's pos
+    }
 
 	void FixedUpdate()
 	{
