@@ -12,13 +12,15 @@ public class PlayerInput : Brain
     void Start()
     {
         Globals.Init();
+    }
 
+    void Update()
+    {
+        Globals.gCamera.GetComponent<GameCam>().LookAtThis(transform.position);
     }
 
     public override void GetInput()
     {
-        Globals.gCamera.GetComponent<GameCam>().LookAtThis(transform.position);
-
         if (Creature.Locomotor.InAir)
             return;
 
@@ -43,7 +45,7 @@ public class PlayerInput : Brain
                         break;
 
                     default:
-                        Debug.Log("Clicked something unexpected...");
+                        Debug.Log("Clicked something unexpected: " + hit.collider.name);
                         break;
                 }
             }

@@ -23,6 +23,11 @@ public class GameManager : MonoBehaviour
     public int playerIncarnation = 25;
     public int minIncarnation = 0;
     public int maxIncarnation = 50;
+
+    public GotoPointer Gotopointer;
+
+
+
     public IEnumerator GameOver()
     {
         DisableAllCreaturesButThePlayer();
@@ -77,11 +82,11 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         IncarnationManager();
+
     }
 
     public void IncarnationManager()
     {
-        Debug.Log("Player incarnation is " + playerIncarnation);
         if (playerIncarnation >= (minIncarnation) && (playerIncarnation <= maxIncarnation))
         {
             if (Input.GetKeyUp(KeyCode.O))
