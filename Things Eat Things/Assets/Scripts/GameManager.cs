@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForEndOfFrame();
 
         float timescale = 1;
-        while (timescale > 0.25f)
+        while (timescale > 0.5f)
         {
             timescale -= 0.1f;
             yield return new WaitForSeconds(0.1f);
