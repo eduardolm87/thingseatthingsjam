@@ -67,7 +67,7 @@ public class PlayerControl : MonoBehaviour {
 	void ClickedCreature( GameObject creature )
 	{
 		possessee = creature.GetComponent<Creature>();
-		possessee.behaviour.enabled = false ;
+		possessee.Brain.enabled = false ;
 		Debug.Log( "Click Creature" );
 	}
 
