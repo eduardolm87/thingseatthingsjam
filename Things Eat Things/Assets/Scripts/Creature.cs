@@ -23,6 +23,10 @@ public class Creature : MonoBehaviour
 
     [HideInInspector]
     public Animator Animator;
+	
+  	 [HideInInspector]
+    public SpriteRenderer Sprite;
+
 
 
     void Awake()
@@ -31,6 +35,7 @@ public class Creature : MonoBehaviour
         Locomotor = GetComponent<Locomotor>();
         Brain = GetComponent<Brain>();
 		  Animator = GetComponentInChildren<Animator>();
+		  Sprite = GetComponentInChildren<SpriteRenderer>();
 
         detectionDistance = 20f;
         //distanceToPlayer = Vector3.Distance(Creature.Player.transform.position, this.transform.position);

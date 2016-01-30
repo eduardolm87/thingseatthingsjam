@@ -37,10 +37,10 @@ public class Locomotor : MonoBehaviour
 
 		  if( Creature.Animator != null ){
 			  Vector3 velocity = Rigidbody.velocity;
-			  if ( velocity.x > 0.05f ){
-				  Creature.Animator.SetBool( "left", true );
-			  } else if ( velocity.x < 0.05f ){
-				  Creature.Animator.SetBool( "left", false );
+			  if ( velocity.x < -0.05f ){
+				  Creature.Sprite.flipX = true;
+			  } else if ( velocity.x > 0.05f ){
+				  Creature.Sprite.flipX = false;
 			  }
 
 			  Creature.Animator.SetBool( "running", velocity.magnitude > .2f );
