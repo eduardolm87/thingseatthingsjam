@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,8 +18,11 @@ public class GameManager : MonoBehaviour
 
     public Hitbox HitboxPrefab;
 
-    public GotoPointer Gotopointer;
+    public Image IncarnationBar;
 
+    public int playerIncarnation = 25;
+    public int minIncarnation = 0;
+    public int maxIncarnation = 50;
     public IEnumerator GameOver()
     {
         DisableAllCreaturesButThePlayer();
@@ -35,8 +39,6 @@ public class GameManager : MonoBehaviour
         }
 
         Time.timeScale = 0;
-        DisableAllCreaturesButThePlayer();
-
         Debug.Log("Game Over");
     }
 
@@ -61,7 +63,6 @@ public class GameManager : MonoBehaviour
             creature.Graphic.SpriteRenderer.enabled = false;
             creature.enabled = false;
 
-            Destroy(creature.gameObject);
         });
 
         List<Hitbox> listOfHitboxes = GameObject.FindObjectsOfType<Hitbox>().ToList();
@@ -71,7 +72,40 @@ public class GameManager : MonoBehaviour
     public void DisablePlayerControl()
     {
         Creature.Player.enabled = false;
-        Creature.Player.Graphic.SpriteRenderer.enabled = false;
     }
 
+    void Update()
+    {
+        IncarnationManager();
+    }
+
+    public void IncarnationManager()
+    {
+        Debug.Log("Player incarnation is " + playerIncarnation);
+        if (playerIncarnation >= (minIncarnation) && (playerIncarnation <= maxIncarnation))
+        {
+            if (Input.GetKeyUp(KeyCode.O))
+            {
+                playerIncarnation -= 3;
+            }
+
+            if (Input.GetKeyUp(KeyCode.P))
+            {
+                playerIncarnation += 3;
+            }
+        }
+
+        if (playerIncarnation <= minIncarnation)
+        {
+            playerIncarnation = minIncarnation;
+        }
+        if (playerIncarnation >= maxIncarnation)
+        {
+            playerIncarnation = maxIncarnation;
+        }
+
+
+        float incarnationFilling = playerIncarnation * 1f / maxIncarnation;
+        IncarnationBar.fillAmount = incarnationFilling;
+    }
 }

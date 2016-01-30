@@ -95,8 +95,8 @@ public class StartOptions : MonoBehaviour {
 		}
 		//Set trigger for animator to start animation fading out Menu UI
 		animMenuAlpha.SetTrigger ("fade");
-        this.showPanels.menuPanel.SetActive(false); //Deactivates THIS showPanel menuPanel
 		Debug.Log ("Game started in same scene! Put your game starting stuff here.");
+        this.showPanels.menuPanel.SetActive(false); //Deactivates THIS showPanel menuPanel
     }
 
 
