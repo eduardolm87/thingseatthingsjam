@@ -48,9 +48,6 @@ public class PlayerInput : Brain
                 }
             }
         }
-
-
-
     }
 
 
@@ -59,6 +56,14 @@ public class PlayerInput : Brain
     void ClickedCreature(GameObject creature)
     {
         //todo: Interact with the creature if the creature is able to be interacted by you. If not, just move towards it
+        Creature otherCreature = creature.GetComponent<Creature>();
+        if (otherCreature != null)
+        {
+            if (Creature.isPlayer && !otherCreature.isPlayer)
+            {
+
+            }
+        }
 
         Creature.Locomotor.TargetPosition = creature.transform.position;
         GamePointer.Instance.Text.text = "";
