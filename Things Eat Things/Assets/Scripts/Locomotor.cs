@@ -27,7 +27,7 @@ public class Locomotor : MonoBehaviour
     {
         if (IsFarFromTargetPosition)
         {
-            MoveTowardsPoint(TargetPosition);
+            MoveTowardsPoint(TargetPosition, Creature.speed);
         }
         else
         {
