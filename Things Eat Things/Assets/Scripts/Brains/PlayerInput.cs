@@ -19,6 +19,9 @@ public class PlayerInput : Brain
     {
         Globals.gCamera.GetComponent<GameCam>().LookAtThis(transform.position);
 
+        if (Creature.Locomotor.InAir)
+            return;
+
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = Globals.gCamera.GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);

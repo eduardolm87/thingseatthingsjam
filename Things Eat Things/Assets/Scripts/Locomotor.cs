@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Locomotor : MonoBehaviour
 {
+    public enum MovementTypes { WALK = 0, JUMP = 1 };
+
     [HideInInspector]
     public Rigidbody Rigidbody;
     [HideInInspector]
@@ -11,9 +13,25 @@ public class Locomotor : MonoBehaviour
     public Creature Creature;
 
 
-    [HideInInspector]
-    public Vector3 TargetPosition;
+    Vector3 targetPosition = Vector3.zero;
+    public Vector3 TargetPosition
+    {
+        get
+        {
+            return targetPosition;
+        }
+        set
+        {
+            if (!InAir)
+            {
+                targetPosition = value;
+            }
+        }
+    }
+
+
     const float MinimumDistanceToTargetPosition = 1f;
+
 
     void Awake()
     {
@@ -25,9 +43,22 @@ public class Locomotor : MonoBehaviour
 
     void Update()
     {
+        if (InAir)
+        {
+            return;
+        }
+
         if (IsFarFromTargetPosition)
         {
-            MoveTowardsPoint(TargetPosition, Creature.speed);
+            switch (Creature.MovementType)
+            {
+                case MovementTypes.JUMP:
+                    JumpTowardsPoint(TargetPosition, Creature.speed);
+                    break;
+                default:
+                    MoveTowardsPoint(TargetPosition, Creature.speed);
+                    break;
+            }
         }
         else
         {
@@ -35,19 +66,23 @@ public class Locomotor : MonoBehaviour
         }
 
 
-		  if( Creature.Animator != null ){
-			  Vector3 velocity = Rigidbody.velocity;
-			  if ( velocity.x < -0.05f ){
-				  Creature.Sprite.flipX = true;
-			  } else if ( velocity.x > 0.05f ){
-				  Creature.Sprite.flipX = false;
-			  }
+        if (Creature.Animator != null)
+        {
+            Vector3 velocity = Rigidbody.velocity;
+            if (velocity.x < -0.05f)
+            {
+                Creature.Sprite.flipX = true;
+            }
+            else if (velocity.x > 0.05f)
+            {
+                Creature.Sprite.flipX = false;
+            }
 
-			  if( velocity.magnitude > .5f )
-				  Creature.Animator.SetBool( "running", true );
-			  else if ( velocity.magnitude < .1f )
-				  Creature.Animator.SetBool( "running", false );
-		  }
+            if (velocity.magnitude > .5f)
+                Creature.Animator.SetBool("running", true);
+            else if (velocity.magnitude < .1f)
+                Creature.Animator.SetBool("running", false);
+        }
     }
 
 
@@ -61,12 +96,12 @@ public class Locomotor : MonoBehaviour
         }
     }
 
-    public void MoveTowardsPoint(Vector3 zPoint, float zSpeed = 1)
+    public bool InAir
     {
-        Vector3 targetSpeed = new Vector3(zPoint.x, transform.position.y, zPoint.z);
-        targetSpeed -= transform.position;
-
-        Rigidbody.velocity = targetSpeed.normalized * zSpeed;
+        get
+        {
+            return !Physics.Raycast(transform.position, -Vector3.up, CapsuleCollider.bounds.extents.y + 0.1f);
+        }
     }
 
     public void Stop()
@@ -74,5 +109,27 @@ public class Locomotor : MonoBehaviour
         Rigidbody.velocity = Vector3.zero;
     }
 
+    public void MoveTowardsPoint(Vector3 zPoint, float zSpeed = 1)
+    {
+        Vector3 targetDir = new Vector3(zPoint.x, transform.position.y, zPoint.z);
+        targetDir -= transform.position;
+
+        Rigidbody.velocity = targetDir.normalized * zSpeed;
+    }
+
+    public void JumpTowardsPoint(Vector3 zPoint, float zSpeed = 1)
+    {
+        float jumpSpeed = 3f;
+
+        Vector3 targetDir = (new Vector3(zPoint.x, transform.position.y, zPoint.z) - transform.position).normalized * zSpeed;
+
+        targetDir.y = transform.position.y + jumpSpeed;
+
+        if (Creature.Cooldown == 0)
+        {
+            Rigidbody.velocity = targetDir;
+            Creature.Cooldown = 1;
+        }
+    }
 
 }

@@ -4,7 +4,7 @@ using System.Collections;
 public class Creature : MonoBehaviour
 {
     public static Creature Player;
-    public bool isPlayer = false;
+
     const float RefreshFrequency = 0.25f;
 
     int health = 5;
@@ -13,6 +13,7 @@ public class Creature : MonoBehaviour
     public float detectionDistance = 3;
     public float attackDistance = 1;
     public float cooldownAfterAttack;
+    public Locomotor.MovementTypes MovementType = Locomotor.MovementTypes.WALK;
 
     [HideInInspector]
     public Graphic Graphic;
@@ -39,6 +40,18 @@ public class Creature : MonoBehaviour
         }
     }
 
+    public bool isPlayer
+    {
+        get
+        {
+            return Creature.Player == this;
+        }
+    }
+
+
+
+
+
     void Awake()
     {
         Graphic = GetComponent<Graphic>();
@@ -46,9 +59,6 @@ public class Creature : MonoBehaviour
         Brain = GetComponent<Brain>();
         Animator = GetComponentInChildren<Animator>();
         Sprite = GetComponentInChildren<SpriteRenderer>();
-
-        detectionDistance = 20f;
-        //distanceToPlayer = Vector3.Distance(Creature.Player.transform.position, this.transform.position);
 
         if (Brain == null) Debug.LogError("Brain not found for " + gameObject.name);
 
@@ -58,7 +68,6 @@ public class Creature : MonoBehaviour
         if (Brain is PlayerInput)
         {
             Player = this;
-            isPlayer = true;
         }
     }
 
@@ -106,8 +115,6 @@ public class Creature : MonoBehaviour
         {
             InflictDamage(hitbox.Damage);
         }
-        else
-            Debug.Log(name + ":  hb no aff");
     }
 
     bool HitboxAffectsMe(Hitbox zHitbox)

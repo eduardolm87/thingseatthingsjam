@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,6 +18,11 @@ public class GameManager : MonoBehaviour
 
     public Hitbox HitboxPrefab;
 
+    public Image IncarnationBar;
+
+    public int playerIncarnation = 25;
+    public int minIncarnation = 0;
+    public int maxIncarnation = 50;
     public IEnumerator GameOver()
     {
         DisableAllCreaturesButThePlayer();
@@ -68,4 +74,38 @@ public class GameManager : MonoBehaviour
         Creature.Player.enabled = false;
     }
 
+    void Update()
+    {
+        IncarnationManager();
+    }
+
+    public void IncarnationManager()
+    {
+        Debug.Log("Player incarnation is " + playerIncarnation);
+        if (playerIncarnation >= (minIncarnation) && (playerIncarnation <= maxIncarnation))
+        {
+            if (Input.GetKeyUp(KeyCode.O))
+            {
+                playerIncarnation -= 3;
+            }
+
+            if (Input.GetKeyUp(KeyCode.P))
+            {
+                playerIncarnation += 3;
+            }
+        }
+
+        if (playerIncarnation <= minIncarnation)
+        {
+            playerIncarnation = minIncarnation;
+        }
+        if (playerIncarnation >= maxIncarnation)
+        {
+            playerIncarnation = maxIncarnation;
+        }
+
+
+        float incarnationFilling = playerIncarnation * 1f / maxIncarnation;
+        IncarnationBar.fillAmount = incarnationFilling;
+    }
 }
