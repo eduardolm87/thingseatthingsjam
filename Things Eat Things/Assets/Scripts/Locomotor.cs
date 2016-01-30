@@ -43,7 +43,10 @@ public class Locomotor : MonoBehaviour
 				  Creature.Sprite.flipX = false;
 			  }
 
-			  Creature.Animator.SetBool( "running", velocity.magnitude > .2f );
+			  if( velocity.magnitude > .5f )
+				  Creature.Animator.SetBool( "running", true );
+			  else if ( velocity.magnitude < .1f )
+				  Creature.Animator.SetBool( "running", false );
 		  }
     }
 
