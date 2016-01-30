@@ -14,7 +14,6 @@ public class Brain : MonoBehaviour
     public virtual void GetInput()
     {
 
-
     }
 
 }

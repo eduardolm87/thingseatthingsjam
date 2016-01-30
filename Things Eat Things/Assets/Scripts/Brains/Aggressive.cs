@@ -3,15 +3,26 @@ using System.Collections;
 
 public class Aggressive : Brain
 {
+    float distanceToPlayer;
+
     public override void GetInput()
     {
+        if (Creature.Player == null)
+            return;
+
+
         base.GetInput();
 
-        if(CanISeePlayer())
+        distanceToPlayer = Vector3.Distance(Creature.Player.transform.position, this.transform.position);
+
+        if (CanISeePlayer())
         {
-            if(AmIInAttackDistanceOfPlayer())
+            if (AmIInAttackDistanceOfPlayer())
             {
-                Attack();
+                if (Creature.Cooldown <= 0)
+                    Attack();
+                else
+                    Creature.Locomotor.Stop();
             }
             else
             {
@@ -27,21 +38,22 @@ public class Aggressive : Brain
 
     void Attack()
     {
-        if (Creature.distanceToPlayer > 1.1f)
-        {
+        Creature.Locomotor.Stop();
 
-        }
+        Vector3 attackDirection = Creature.Player.transform.position - transform.position;
+        Hitbox.Shoot(Creature, transform.position, attackDirection, 3, 1, 1, true); //todo: make this variable
+        Creature.Cooldown = Creature.cooldownAfterAttack;
     }
 
     void MoveTowardsPlayer()
     {
         Creature.Locomotor.TargetPosition = Creature.Player.transform.position;
-        Debug.Log(gameObject + "distance to player is " + Creature.distanceToPlayer); 
+        //Debug.Log(gameObject + "distance to player is " + Creature.distanceToPlayer);
     }
 
     bool AmIInAttackDistanceOfPlayer()
     {
-        if (Creature.distanceToPlayer > Creature.attackDistance)
+        if (distanceToPlayer > Creature.attackDistance)
         {
             return false;
         }
@@ -49,22 +61,19 @@ public class Aggressive : Brain
         {
             return true;
         }
-        
+
     }
 
     bool CanISeePlayer()
     {
-
         if (Vector3.Distance(Creature.Player.transform.position, transform.position) > Creature.detectionDistance)
         {
             return false;
         }
-
         else
         {
             return true;
         }
-        
     }
 
     void MoveToRandomPosition()
@@ -74,4 +83,6 @@ public class Aggressive : Brain
         nuPos.z += (.5f - Random.value) * 3.0f;
         Creature.Locomotor.TargetPosition = nuPos;
     }
+
+
 }

@@ -27,12 +27,27 @@ public class Locomotor : MonoBehaviour
     {
         if (IsFarFromTargetPosition)
         {
-            MoveTowardsPoint(TargetPosition);
+            MoveTowardsPoint(TargetPosition, Creature.speed);
         }
         else
         {
             Stop();
         }
+
+
+		  if( Creature.Animator != null ){
+			  Vector3 velocity = Rigidbody.velocity;
+			  if ( velocity.x < -0.05f ){
+				  Creature.Sprite.flipX = true;
+			  } else if ( velocity.x > 0.05f ){
+				  Creature.Sprite.flipX = false;
+			  }
+
+			  if( velocity.magnitude > .5f )
+				  Creature.Animator.SetBool( "running", true );
+			  else if ( velocity.magnitude < .1f )
+				  Creature.Animator.SetBool( "running", false );
+		  }
     }
 
 
