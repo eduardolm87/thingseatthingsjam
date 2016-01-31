@@ -29,6 +29,8 @@ public class Creature : MonoBehaviour
     public float cooldownAfterAttack = 0.75f;
     public int attackDamage = 1;
 
+    public int IncarnationBarSize = 50;
+
     public Locomotor.MovementTypes MovementType = Locomotor.MovementTypes.WALK;
     public CREATURES CreatureType = CREATURES.Rabbit;
 
@@ -200,9 +202,9 @@ public class Creature : MonoBehaviour
             return;
 
         health = Mathf.Clamp(health - zQuantity, 0, int.MaxValue);
-        //Debug.Log(name + " loses " + zQuantity + " health  (" + health + "/" + maxhealth + ")");
-        //todo: feedback of damage
 
+        Graphic.LifeBar.fillBar.fillAmount = health * 1f / maxhealth;
+        Graphic.LifeBar.Show();
 
         if (health < 1)
         {

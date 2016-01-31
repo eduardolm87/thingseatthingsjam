@@ -24,8 +24,9 @@ public class IngameUI : MonoBehaviour
     public FadeScreen FadeScreen;
     public Image IncarnationBar;
 
+
     public const int minIncarnation = 0;
-    public const int maxIncarnation = 50;
+    public int maxIncarnation = 50;
     int playerIncarnation = minIncarnation;
     public int PlayerIncarnation
     {
@@ -42,7 +43,7 @@ public class IngameUI : MonoBehaviour
     {
         get
         {
-            return Instance.playerIncarnation >= maxIncarnation;
+            return Instance.playerIncarnation >= IngameUI.Instance.maxIncarnation;
         }
     }
 
@@ -67,12 +68,19 @@ public class IngameUI : MonoBehaviour
         }
         //
 
+        if (Creature.Player == null)
+            return;
+
         RefreshIncarnationBar();
         RefreshTotem();
     }
 
     void RefreshIncarnationBar()
     {
+        maxIncarnation = Creature.Player.IncarnationBarSize;
+
+        IncarnationBar.rectTransform.sizeDelta = new Vector2(maxIncarnation * 2, IncarnationBar.preferredHeight);
+
         IncarnationBar.fillAmount = playerIncarnation * 1f / maxIncarnation;
     }
 

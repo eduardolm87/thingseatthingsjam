@@ -53,7 +53,6 @@ public class TotemManager : MonoBehaviour
         for (int i = 0; i <= maxTotemIndex; i++)
         {
             Creature.CREATURES currentCreature = TotemOrder[i];
-            Debug.Log("Refreshing " + currentCreature);
             SetTotemPart(currentCreature, true);
         }
     }

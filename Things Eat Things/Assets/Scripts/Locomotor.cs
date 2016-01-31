@@ -29,7 +29,7 @@ public class Locomotor : MonoBehaviour
         }
     }
 
-
+    [HideInInspector]
     public float MinimumDistanceToTargetPosition = 1.1f;
 
 

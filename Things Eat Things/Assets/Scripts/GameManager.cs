@@ -144,6 +144,8 @@ public class GameManager : MonoBehaviour
         //Health fix
         zCreatureYouWhere.health = zCreatureYouWhere.maxhealth;
         zCreatureYouWillBecome.health = zCreatureYouWillBecome.maxhealth;
+        zCreatureYouWhere.Graphic.LifeBar.Hide();
+        zCreatureYouWillBecome.Graphic.LifeBar.Hide();
 
         //Deplete your incarnation energy
         IngameUI.Instance.PlayerIncarnation = 0;
