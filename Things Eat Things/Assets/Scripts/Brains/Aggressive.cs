@@ -56,6 +56,9 @@ public class Aggressive : Brain
         Vector3 attackDirection = Creature.Player.transform.position - transform.position;
         Hitbox.Shoot(Creature, transform.position, attackDirection, 3, Creature.attackDamage, 1, true); //todo: make this variable
         Creature.Cooldown = Creature.cooldownAfterAttack;
+
+         Creature.Animator.SetBool("Attack", true);
+
     }
 
     void MoveTowardsPlayer()
