@@ -58,7 +58,8 @@ public class Aggressive : Brain
         Hitbox.Shoot(Creature, transform.position, attackDirection, 3, Creature.attackDamage, 1, true); //todo: make this variable
         Creature.Cooldown = Creature.cooldownAfterAttack;
 
-        Creature.Animator.SetBool("Attack", true);
+         Creature.Animator.SetBool("Attack", true);
+			GameManager.Instance.GameEvent( "WolfBite" );
 
     }
 
