@@ -103,6 +103,7 @@ public class GameManager : MonoBehaviour
         SpawnPlayerEffect(2);
 
         yield return new WaitForSeconds(2.25f);
+			GameEvent("StartGame");
 
         PlayerInput.AcceptInput = true;
     }
