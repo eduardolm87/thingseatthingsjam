@@ -132,6 +132,27 @@ public class Creature : MonoBehaviour
         }
     }
 
+    void OnTriggerEnter(Collider zOther)
+    {
+        Hitbox hitbox = zOther.GetComponent<Hitbox>();
+        if (hitbox != null)
+        {
+            if (HitboxAffectsMe(hitbox))
+            {
+                InflictDamage(hitbox.Damage, hitbox);
+            }
+        }
+
+        Interactable interactable = zOther.GetComponent<Interactable>();
+        if (interactable != null)
+        {
+            interactable.GetTouchedByCreature(this);
+        }
+    }
+
+
+
+
     void HurtTime(float zTimeElapsed)
     {
         if (Cooldown > 0)
@@ -158,18 +179,6 @@ public class Creature : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter(Collider zOther)
-    {
-        Hitbox hitbox = zOther.GetComponent<Hitbox>();
-        if (hitbox == null)
-            return;
-
-        if (HitboxAffectsMe(hitbox))
-        {
-            InflictDamage(hitbox.Damage, hitbox);
-        }
-    }
-
     bool HitboxAffectsMe(Hitbox zHitbox)
     {
         if (isHurt)
@@ -191,7 +200,10 @@ public class Creature : MonoBehaviour
             return;
 
         health = Mathf.Clamp(health - zQuantity, 0, int.MaxValue);
-        Debug.Log(name + " loses " + zQuantity + " health  (" + health + "/" + maxhealth + ")");
+        //Debug.Log(name + " loses " + zQuantity + " health  (" + health + "/" + maxhealth + ")");
+        //todo: feedback of damage
+
+
         if (health < 1)
         {
             Die(zSource);
@@ -201,6 +213,7 @@ public class Creature : MonoBehaviour
             isHurt = true;
             Cooldown = HurtingTime;
             Graphic.SpriteRenderer.color = Color.red;
+            Locomotor.Stop();
         }
     }
 
@@ -281,6 +294,4 @@ public class Creature : MonoBehaviour
         Creature.CREATURES nextCreature = IngameUI.Instance.TotemManager.NextCreatureToEmbody();
         return nextCreature != CREATURES.END && zCreatureThatKilledYou.CreatureType == nextCreature;
     }
-
-
 }

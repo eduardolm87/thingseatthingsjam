@@ -30,7 +30,7 @@ public class Locomotor : MonoBehaviour
     }
 
 
-    const float MinimumDistanceToTargetPosition = 1.1f;
+    public float MinimumDistanceToTargetPosition = 1.1f;
 
 
     void Awake()
@@ -46,6 +46,8 @@ public class Locomotor : MonoBehaviour
         AutoGround();
         TargetPosition = transform.position;
         Stop();
+
+        MinimumDistanceToTargetPosition = CapsuleCollider.radius * +0.5f;
     }
 
     void Update()

@@ -126,7 +126,9 @@ public class GameManager : MonoBehaviour
 
     public void DisablePlayerControl()
     {
+        PlayerInput.AcceptInput = false;
         Creature.Player.enabled = false;
+        Creature.Player.Graphic.SpriteRenderer.enabled = false;
     }
 
     public IEnumerator ProceedToIncarnate(Creature zCreatureYouWhere, Creature zCreatureYouWillBecome)
