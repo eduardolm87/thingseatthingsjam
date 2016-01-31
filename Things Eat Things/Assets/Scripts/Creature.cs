@@ -12,7 +12,7 @@ public class Creature : MonoBehaviour
 
     public const float HurtingTime = 0.5f;
 
-    const float RefreshFrequency = 0.25f;
+    public const float RefreshFrequency = 0.25f;
 
 
     public string DisplayName = "???";
@@ -152,6 +152,18 @@ public class Creature : MonoBehaviour
         }
     }
 
+    void OnCollisionEnter(Collision zCol)
+    {
+        SpecialCollider spcCollider = zCol.collider.GetComponent<SpecialCollider>();
+        if (spcCollider != null)
+        {
+            if (spcCollider.CreaturesThatCanPassThrough.Contains(CreatureType))
+            {
+                Physics.IgnoreCollision(zCol.collider, Locomotor.CapsuleCollider);
+                Debug.Log("collisions ignored between " + zCol.collider.name + " and " + name);
+            }
+        }
+    }
 
 
 
@@ -174,6 +186,9 @@ public class Creature : MonoBehaviour
     {
         if (Cooldown > 0)
         {
+            if (CreatureType == CREATURES.Wolf)
+                Locomotor.Stop();
+
             if (Cooldown > zQuantity)
                 Cooldown -= zQuantity;
             else

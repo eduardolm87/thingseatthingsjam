@@ -50,6 +50,7 @@ public class GameManager : MonoBehaviour
     {
         yield return StartCoroutine(StopTheGame());
 
+        IngameUI.Instance.ClueText.text = "GAME OVER...";
         Debug.Log("Game Over");
 
         IngameUI.Instance.FadeScreen.FadeIn(2);
@@ -87,6 +88,8 @@ public class GameManager : MonoBehaviour
     public IEnumerator StartNewGame()
     {
         PlayerInput.AcceptInput = false;
+
+        gCamera = Camera.main.gameObject;
 
         IngameUI.Instance.FadeScreen.BlackScreen.enabled = true;
         IngameUI.Instance.FadeScreen.BlackScreen.color = Color.black;
