@@ -23,7 +23,8 @@ public class IngameUI : MonoBehaviour
     public TotemManager TotemManager;
     public FadeScreen FadeScreen;
     public Image IncarnationBar;
-
+    public Image IncarnationBarBg;
+    public Text ClueText;
 
     public const int minIncarnation = 0;
     public int maxIncarnation = 50;
@@ -53,10 +54,12 @@ public class IngameUI : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Alpha1))
         {
             playerIncarnation -= 20;
+            TotemManager.Refresh();
         }
         else if (Input.GetKeyUp(KeyCode.Alpha2))
         {
             playerIncarnation += 20;
+            TotemManager.Refresh();
         }
         else if (Input.GetKeyUp(KeyCode.Alpha3))
         {
@@ -79,9 +82,16 @@ public class IngameUI : MonoBehaviour
     {
         maxIncarnation = Creature.Player.IncarnationBarSize;
 
-        IncarnationBar.rectTransform.sizeDelta = new Vector2(maxIncarnation * 2, IncarnationBar.preferredHeight);
+        IncarnationBar.rectTransform.sizeDelta = new Vector2(maxIncarnation * 2, 10);
+        IncarnationBarBg.rectTransform.sizeDelta = IncarnationBar.rectTransform.sizeDelta;
 
         IncarnationBar.fillAmount = playerIncarnation * 1f / maxIncarnation;
+
+        bool ShouldShowBar = (Creature.Player.CreatureType != Creature.CREATURES.TinyLight);
+
+        IncarnationBar.enabled = ShouldShowBar;
+        IncarnationBarBg.enabled = ShouldShowBar;
+
     }
 
     void RefreshTotem()
