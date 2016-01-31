@@ -13,6 +13,7 @@ public class Sounds : MonoBehaviour {
 	const int kRestMus2 = 4;
 	const int kMidMus3 = 5;
 	const int kWolfSong = 6;
+	const int kWolfGrowl = 7;
 
 	float LastEventTime;
 
@@ -25,7 +26,7 @@ public class Sounds : MonoBehaviour {
 	void Update () {
 	
 		if( Input.GetKeyDown( KeyCode.X )){
-				GameManager.Instance.GameEvent( "WolfAppears" );
+				GameManager.Instance.GameEvent( "WolfBite" );
 		}
 
 		if( !music.isPlaying ){
@@ -57,6 +58,16 @@ public class Sounds : MonoBehaviour {
 		}
 		LastWolfAppearTime = Time.time;
 	}
+
+	public void Event_WolfBite()
+	{
+		effects.Stop();
+		effects.PlayOneShot( musics[ kWolfGrowl ] );
+		effects.clip = musics[ kBirdSong ];
+		effects.Play();
+
+	}
+
 
 	public void Event_HunterAppears()
 	{
