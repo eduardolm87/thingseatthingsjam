@@ -59,6 +59,7 @@ public class Aggressive : Brain
         Creature.Cooldown = Creature.cooldownAfterAttack;
 
          Creature.Animator.SetBool("Attack", true);
+			GameManager.Instance.GameEvent( "WolfBite" );
 
     }
 
