@@ -150,8 +150,8 @@ public class Locomotor : MonoBehaviour
     public void AutoGround()
     {
         RaycastHit RayCast = new RaycastHit();
-        Ray Ray = new Ray(transform.position, -Vector3.up);
-        if (Physics.Raycast(Ray, out RayCast, 500))
+        Ray Ray = new Ray((transform.position + Vector3.up * 20), -Vector3.up);
+        if (Physics.Raycast(Ray, out RayCast, 5000))
         {
             transform.position = RayCast.point + (0.01f * Vector3.up);
         }

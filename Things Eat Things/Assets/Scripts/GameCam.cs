@@ -7,13 +7,6 @@ public class GameCam : MonoBehaviour
     Vector3 targetLookPos;
     public float dist;
 
-
-    void Start()
-    {
-        //Vector3 playerPos = new Vector3()
-        //todo: Move instantly to the player's pos
-    }
-
     void FixedUpdate()
     {
 		 transform.rotation = Quaternion.Euler( GameManager.Instance.CamTilt, 0,0 );
