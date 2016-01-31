@@ -106,6 +106,7 @@ public class GameManager : MonoBehaviour
         SpawnPlayerEffect(2);
 
         yield return new WaitForSeconds(2.25f);
+			GameEvent("StartGame");
 
         PlayerInput.AcceptInput = true;
     }
@@ -174,6 +175,7 @@ public class GameManager : MonoBehaviour
 
         Brain newBrain = zCreatureYouWillBecome.gameObject.AddComponent<PlayerInput>();
         zCreatureYouWillBecome.GetBrain();
+			GameEvent("ChangeForm");
 
         //We kill the old creature
         zCreatureYouWhere.EffectsWhenDestroyed();
@@ -184,4 +186,10 @@ public class GameManager : MonoBehaviour
         IngameUI.Instance.TotemManager.Refresh();
 
     }
+
+	public void GameEvent( string eventName )
+	{
+		BroadcastMessage( "Event_" + eventName,  null, SendMessageOptions.DontRequireReceiver);
+	}
+
 }
