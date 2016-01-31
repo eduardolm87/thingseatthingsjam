@@ -26,9 +26,9 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
-	public float CamTilt = 50;
+    public float CamTilt = 50;
 
-    public  GameObject gCamera;
+    public GameObject gCamera;
 
     public const int kCreaturesLayer = 9;
     public const int kSceneryLayer = 8;
@@ -90,6 +90,7 @@ public class GameManager : MonoBehaviour
 
         IngameUI.Instance.FadeScreen.BlackScreen.enabled = true;
         IngameUI.Instance.FadeScreen.BlackScreen.color = Color.black;
+        IngameUI.Instance.ClueText.text = "";
 
         yield return new WaitForSeconds(1);
 

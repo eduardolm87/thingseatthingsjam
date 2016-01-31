@@ -55,6 +55,8 @@ public class TotemManager : MonoBehaviour
             Creature.CREATURES currentCreature = TotemOrder[i];
             SetTotemPart(currentCreature, true);
         }
+
+        RefreshClue();
     }
 
     public void SetTotemPart(Creature.CREATURES zTotem, bool zStatus)
@@ -74,5 +76,31 @@ public class TotemManager : MonoBehaviour
     public void Reset()
     {
         TotemParts.ForEach(t => t.Hide());
+    }
+
+    void RefreshClue()
+    {
+        if (Creature.Player.CreatureType == Creature.CREATURES.TinyLight)
+        {
+            IngameUI.Instance.ClueText.text = "Click on a Rabbit to start the Inkarmation ritual";
+        }
+        else
+        {
+            if (isPlayerAtMaximumIncarnation)
+            {
+                IngameUI.Instance.ClueText.text = "Go to the Altar and end the ritual";
+            }
+            else
+            {
+                if (IngameUI.IsPlayerAtFullIncarnationEnergy)
+                {
+                    IngameUI.Instance.ClueText.text = "Inkarmation energy full! Get killed by a " + NextCreatureToEmbody().ToString();
+                }
+                else
+                {
+                    IngameUI.Instance.ClueText.text = "Collect tokens to refill and avoid getting killed";
+                }
+            }
+        }
     }
 }
