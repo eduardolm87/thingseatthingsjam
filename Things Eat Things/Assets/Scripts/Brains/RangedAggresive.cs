@@ -14,7 +14,8 @@ public class RangedAggresive : Aggressive
         Vector3 attackDirection = (Creature.Player.transform.position - transform.position).normalized;
         ShootBullet(attackDirection, BulletSpeed);
         Creature.Cooldown = Creature.cooldownAfterAttack;
-    }
+          Creature.Animator.SetBool("Attack", true);
+   }
 
     void ShootBullet(Vector3 zDirection, float zSpeed)
     {

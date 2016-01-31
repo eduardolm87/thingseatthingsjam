@@ -3,7 +3,7 @@ using System.Collections;
 
 public class EnergyToken : Interactable
 {
-    const int IncarnationRecovery = 15;
+    const int IncarnationRecovery = 20;
 
     void Start()
     {
