@@ -31,6 +31,7 @@ public class Aggressive : Brain
             }
             else
             {
+					GameManager.Instance.GameEvent( "WolfAppears" );
                 MoveTowardsPlayer();
             }
         }
