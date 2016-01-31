@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Creature : MonoBehaviour
 {
-    public enum CREATURES { TinyLight, Rabbit, Wolf, Hunter };
+    public enum CREATURES { TinyLight, Rabbit, Wolf, Hunter, END };
 
     public static Creature Player;
 
@@ -11,15 +11,21 @@ public class Creature : MonoBehaviour
 
     const float RefreshFrequency = 0.25f;
 
-    int health = 5;
+
+    public string DisplayName = "???";
+
     public int maxhealth = 5;
+    int health = 5;
+
+    [Range(1f, 4.5f)]
     public float speed = 1;
-    public float detectionDistance = 3;
+
     public float attackDistance = 1;
-    public float cooldownAfterAttack;
+    public float cooldownAfterAttack = 0.75f;
+    public int attackDamage = 1;
+
     public Locomotor.MovementTypes MovementType = Locomotor.MovementTypes.WALK;
     public CREATURES CreatureType = CREATURES.Rabbit;
-    public string DisplayName = "???";
 
     [HideInInspector]
     public Graphic Graphic;
@@ -65,10 +71,14 @@ public class Creature : MonoBehaviour
     {
         Graphic = GetComponent<Graphic>();
         Locomotor = GetComponent<Locomotor>();
-        Brain = GetComponent<Brain>();
         Animator = GetComponentInChildren<Animator>();
         Sprite = GetComponentInChildren<SpriteRenderer>();
+        GetBrain();
+    }
 
+    public void GetBrain()
+    {
+        Brain = GetComponent<Brain>();
         if (Brain == null) Debug.LogError("Brain not found for " + gameObject.name);
 
         if (GetComponents<Brain>().Length > 1)
@@ -93,13 +103,14 @@ public class Creature : MonoBehaviour
         if (isHurt)
         {
             HurtTime(Time.deltaTime);
-            return;
         }
-
-        if (isPlayer)
+        else
         {
-            Brain.GetInput();
-            CooldownTime(Time.deltaTime);
+            if (isPlayer)
+            {
+                Brain.GetInput();
+                CooldownTime(Time.deltaTime);
+            }
         }
     }
 
@@ -108,11 +119,12 @@ public class Creature : MonoBehaviour
         if (isHurt)
         {
             HurtTime(RefreshFrequency);
-            return;
         }
-
-        Brain.GetInput();
-        CooldownTime(RefreshFrequency);
+        else
+        {
+            Brain.GetInput();
+            CooldownTime(RefreshFrequency);
+        }
     }
 
     void HurtTime(float zTimeElapsed)
@@ -149,7 +161,7 @@ public class Creature : MonoBehaviour
 
         if (HitboxAffectsMe(hitbox))
         {
-            InflictDamage(hitbox.Damage);
+            InflictDamage(hitbox.Damage, hitbox);
         }
     }
 
@@ -168,13 +180,13 @@ public class Creature : MonoBehaviour
         }
     }
 
-    void InflictDamage(int zQuantity)
+    void InflictDamage(int zQuantity, Hitbox zSource = null)
     {
         health = Mathf.Clamp(health - zQuantity, 0, int.MaxValue);
         Debug.Log(name + " loses " + zQuantity + " health  (" + health + "/" + maxhealth + ")");
         if (health < 1)
         {
-            Die();
+            Die(zSource);
         }
         else
         {
@@ -184,19 +196,33 @@ public class Creature : MonoBehaviour
         }
     }
 
-    void Die()
+    void Die(Hitbox zSource = null)
     {
         if (isPlayer)
         {
+            if (zSource != null && IngameUI.IsPlayerAtFullIncarnationEnergy)
+            {
+                if (HaveIBeenKilledByTheRightCreature(zSource.Owner))
+                {
+                    GameManager.Instance.StartCoroutine(GameManager.Instance.ProceedToIncarnate(this, zSource.Owner));
+                    return;
+                }
+            }
+
             GameManager.Instance.StartCoroutine(GameManager.Instance.GameOver());
         }
         else
         {
-            //todo: effects
+            EffectsWhenDestroyed();
             Destroy(gameObject);
         }
     }
 
+    public void EffectsWhenDestroyed()
+    {
+        //todo: effects
+
+    }
 
     void OnMouseEnter()
     {
@@ -215,28 +241,15 @@ public class Creature : MonoBehaviour
     {
         string suggestion = "";
 
-        switch (Player.CreatureType)
+        Interactions.Outcomes outcome = Interactions.GetOutcome(Player.CreatureType, zOtherCreature.CreatureType);
+
+        switch (outcome)
         {
-            case CREATURES.Wolf:
-                switch (zOtherCreature.CreatureType)
-                {
-                    case CREATURES.Rabbit:
-                    case CREATURES.Hunter:
-                        suggestion = "Attack";
-                        break;
-                }
-
-                break;
-
-            case CREATURES.Hunter:
-                switch (zOtherCreature.CreatureType)
-                {
-                    case CREATURES.Rabbit:
-                    case CREATURES.Wolf:
-                    case CREATURES.Hunter:
-                        suggestion = "Shoot";
-                        break;
-                }
+            case Interactions.Outcomes.CanAttack:
+                if (Player.CreatureType == CREATURES.Hunter)
+                    suggestion = "Shoot";
+                else
+                    suggestion = "Attack";
 
                 break;
 
@@ -247,4 +260,12 @@ public class Creature : MonoBehaviour
 
         GamePointer.Instance.Text.text = suggestion;
     }
+
+    public bool HaveIBeenKilledByTheRightCreature(Creature zCreatureThatKilledYou)
+    {
+        Creature.CREATURES nextCreature = IngameUI.Instance.TotemManager.NextCreatureToEmbody();
+        return nextCreature != CREATURES.END && zCreatureThatKilledYou.CreatureType == nextCreature;
+    }
+
+
 }

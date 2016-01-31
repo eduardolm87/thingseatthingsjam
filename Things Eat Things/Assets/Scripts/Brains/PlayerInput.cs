@@ -3,12 +3,6 @@ using System.Collections;
 
 public class PlayerInput : Brain
 {
-
-    public float power;
-
-    Vector3 targetCamOffset;
-
-
     void Start()
     {
         Globals.Init();
@@ -45,7 +39,7 @@ public class PlayerInput : Brain
                         break;
 
                     default:
-                        Debug.Log("Clicked something unexpected: " + hit.collider.name);
+                        //Debug.Log("Clicked something unexpected: " + hit.collider.name);
                         break;
                 }
             }
@@ -63,7 +57,11 @@ public class PlayerInput : Brain
         {
             if (Creature.isPlayer && !otherCreature.isPlayer)
             {
-
+                Interactions.Outcomes outcome = Interactions.GetOutcome(Creature.CreatureType, otherCreature.CreatureType);
+                if (outcome == Interactions.Outcomes.CanAttack)
+                {
+                    TryToAttackCreature(otherCreature);
+                }
             }
         }
 
@@ -74,17 +72,13 @@ public class PlayerInput : Brain
 
     void ClickedScenery(GameObject scenery)
     {
-        //todo: ??
-        // Debug.Log("Click Scenery");
+        //...
     }
 
     void ClickedGround(Vector3 position)
     {
         if (isValidTerrainPoint(position))
-        {
-            Creature.Locomotor.TargetPosition = position;
-            GameManager.Instance.Gotopointer.Show(position + (Vector3.up * 0.1f));
-        }
+            MoveToPoint(position);
     }
 
     bool isValidTerrainPoint(Vector3 zPosition)
@@ -92,4 +86,68 @@ public class PlayerInput : Brain
         //todo: differentiate whether you have clicked a valid position
         return true;
     }
+
+
+    void MoveToPoint(Vector3 position)
+    {
+        Creature.Locomotor.TargetPosition = position;
+        GameManager.Instance.Gotopointer.Show(position + (Vector3.up * 0.1f));
+    }
+
+    void TryToAttackCreature(Creature zCreature)
+    {
+        if (Creature.Cooldown <= 0 && Vector3.Distance(transform.position, zCreature.transform.position) < Creature.attackDistance)
+        {
+            switch (Creature.CreatureType)
+            {
+                case global::Creature.CREATURES.Hunter:
+                    Shoot(zCreature);
+                    break;
+                default:
+                    Melee(zCreature);
+                    break;
+            }
+        }
+        else
+        {
+            MoveToPoint(zCreature.transform.position);
+        }
+    }
+
+
+    void Melee(Creature zCreature)
+    {
+        Creature.Locomotor.Stop();
+
+        Vector3 attackDirection = zCreature.transform.position - transform.position;
+        Hitbox.Shoot(Creature, transform.position, attackDirection, 3, Creature.attackDamage, 1, true); //todo: make this variable
+        Creature.Cooldown = Creature.cooldownAfterAttack;
+    }
+
+    void Shoot(Creature zCreature)
+    {
+        Creature.Locomotor.Stop();
+
+        Vector3 attackDirection = zCreature.transform.position - transform.position;
+
+        HunterShootBullet(attackDirection, 4); //hacks!: we should really look into an enemy database to get the attack speed
+
+        Creature.Cooldown = Creature.cooldownAfterAttack;
+    }
+
+
+    void HunterShootBullet(Vector3 zDirection, float zSpeed)
+    {
+        GameObject hitboxObj = Instantiate(GameManager.Instance.HunterBulletPrefab.gameObject, transform.position, Quaternion.identity) as GameObject;
+        Hitbox newHitbox = hitboxObj.GetComponent<Hitbox>();
+
+        newHitbox.Owner = Creature;
+        newHitbox.Damage = Creature.attackDamage;
+        newHitbox.DisappearWhenTouchingValidTarget = true;
+
+        newHitbox.Rigidbody.velocity = zDirection.normalized * zSpeed;
+
+        newHitbox.Invoke("DieByTime", 3);//hacks!: we should really look into an enemy database to get the time to disappear
+    }
+
 }

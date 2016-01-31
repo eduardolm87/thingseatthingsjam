@@ -18,15 +18,9 @@ public class GameManager : MonoBehaviour
 
     public Hitbox HitboxPrefab;
 
-    public Image IncarnationBar;
-
-    public int playerIncarnation = 25;
-    public int minIncarnation = 0;
-    public int maxIncarnation = 50;
+    public Hitbox HunterBulletPrefab;
 
     public GotoPointer Gotopointer;
-
-
 
     public IEnumerator GameOver()
     {
@@ -46,6 +40,8 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0;
         Debug.Log("Game Over");
     }
+
+
 
 
     public void StartNewGame()
@@ -79,38 +75,29 @@ public class GameManager : MonoBehaviour
         Creature.Player.enabled = false;
     }
 
-    void Update()
+    public IEnumerator ProceedToIncarnate(Creature zCreatureYouWhere, Creature zCreatureYouWillBecome)
     {
-        IncarnationManager();
+        Debug.Log("Incarnate from " + zCreatureYouWhere.name + " to " + zCreatureYouWillBecome.name);
 
-    }
+        //Deplete your incarnation energy
+        IngameUI.Instance.PlayerIncarnation = 0;
 
-    public void IncarnationManager()
-    {
-        if (playerIncarnation >= (minIncarnation) && (playerIncarnation <= maxIncarnation))
-        {
-            if (Input.GetKeyUp(KeyCode.O))
-            {
-                playerIncarnation -= 3;
-            }
+        //The killed creature gets its Brain destroyed
+        Destroy(zCreatureYouWhere.Brain);
+        yield return new WaitForEndOfFrame();
 
-            if (Input.GetKeyUp(KeyCode.P))
-            {
-                playerIncarnation += 3;
-            }
-        }
+        //The killer creature swaps its brain for a PlayerInput component
+        Brain oldBrain = zCreatureYouWillBecome.GetComponent<Brain>();
+        Destroy(oldBrain);
+        yield return new WaitForEndOfFrame();
 
-        if (playerIncarnation <= minIncarnation)
-        {
-            playerIncarnation = minIncarnation;
-        }
-        if (playerIncarnation >= maxIncarnation)
-        {
-            playerIncarnation = maxIncarnation;
-        }
+        Brain newBrain = zCreatureYouWillBecome.gameObject.AddComponent<PlayerInput>();
+        zCreatureYouWillBecome.GetBrain();
 
+        //We kill the old creature
+        zCreatureYouWhere.EffectsWhenDestroyed();
+        Destroy(zCreatureYouWhere.gameObject);
+        yield return new WaitForEndOfFrame();
 
-        float incarnationFilling = playerIncarnation * 1f / maxIncarnation;
-        IncarnationBar.fillAmount = incarnationFilling;
     }
 }

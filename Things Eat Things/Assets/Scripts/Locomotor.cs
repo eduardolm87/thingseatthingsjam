@@ -41,6 +41,13 @@ public class Locomotor : MonoBehaviour
         TargetPosition = transform.position;
     }
 
+    void Start()
+    {
+        AutoGround();
+        TargetPosition = transform.position;
+        Stop();
+    }
+
     void Update()
     {
         if (InAir)
@@ -112,6 +119,7 @@ public class Locomotor : MonoBehaviour
     public void Stop()
     {
         Rigidbody.velocity = Vector3.zero;
+        TargetPosition = transform.position;
     }
 
     public void MoveTowardsPoint(Vector3 zPoint, float zSpeed = 1)
@@ -134,6 +142,20 @@ public class Locomotor : MonoBehaviour
         {
             Rigidbody.velocity = targetDir;
             Creature.Cooldown = 0.75f;
+        }
+    }
+
+    public void AutoGround()
+    {
+        RaycastHit RayCast = new RaycastHit();
+        Ray Ray = new Ray(transform.position, -Vector3.up);
+        if (Physics.Raycast(Ray, out RayCast, 500))
+        {
+            transform.position = RayCast.point + (0.01f * Vector3.up);
+        }
+        else
+        {
+            Debug.LogError("Can't ground " + name);
         }
     }
 

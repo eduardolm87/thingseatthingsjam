@@ -3,6 +3,12 @@ using System.Collections;
 
 public class Aggressive : Brain
 {
+    public enum RELAXBEHAVIOURS { STOP, WANDER };
+
+    public float detectionDistance = 3;
+
+    public RELAXBEHAVIOURS BehaviourWhenStopped = RELAXBEHAVIOURS.WANDER;
+
     float distanceToPlayer;
 
     public override void GetInput()
@@ -31,17 +37,25 @@ public class Aggressive : Brain
         }
         else
         {
-            MoveToRandomPosition();
+            switch (BehaviourWhenStopped)
+            {
+                case RELAXBEHAVIOURS.WANDER:
+                    MoveToRandomPosition();
+                    break;
+                default:
+                    Creature.Locomotor.Stop();
+                    break;
+            }
         }
 
     }
 
-    void Attack()
+    protected virtual void Attack()
     {
         Creature.Locomotor.Stop();
 
         Vector3 attackDirection = Creature.Player.transform.position - transform.position;
-        Hitbox.Shoot(Creature, transform.position, attackDirection, 3, 1, 1, true); //todo: make this variable
+        Hitbox.Shoot(Creature, transform.position, attackDirection, 3,Creature.attackDamage, 1, true); //todo: make this variable
         Creature.Cooldown = Creature.cooldownAfterAttack;
     }
 
@@ -66,7 +80,7 @@ public class Aggressive : Brain
 
     bool CanISeePlayer()
     {
-        if (Vector3.Distance(Creature.Player.transform.position, transform.position) > Creature.detectionDistance)
+        if (Vector3.Distance(Creature.Player.transform.position, transform.position) > detectionDistance)
         {
             return false;
         }

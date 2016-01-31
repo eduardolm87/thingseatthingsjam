@@ -5,11 +5,11 @@ public class Hitbox : MonoBehaviour
 {
     public const bool ShowHitbox = true;
 
-    [SerializeField]
-    Rigidbody Rigidbody;
+    [HideInInspector]
+    public Rigidbody Rigidbody;
 
-    [SerializeField]
-    SphereCollider Collider;
+    [HideInInspector]
+    public SphereCollider Collider;
 
     //Properties
     [HideInInspector]
