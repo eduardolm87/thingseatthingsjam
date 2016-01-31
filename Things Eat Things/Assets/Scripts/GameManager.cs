@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -24,21 +25,37 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator GameOver()
     {
-        DisableAllCreaturesButThePlayer();
-        DisablePlayerControl();
+        yield return StartCoroutine(StopTheGame());
 
+        IngameUI.Instance.FadeScreen.FadeIn(2);
+        yield return new WaitForSeconds(2.5f);
+
+        Debug.Log("Game Over");
+        //todo: now what? title?
+    }
+
+    public IEnumerator WinTheGame()
+    {
+        yield return StartCoroutine(StopTheGame());
+
+        Debug.Log("You won the game!");
+        IngameUI.Instance.FadeScreen.FadeIn(2);
+        yield return new WaitForSeconds(2.5f);
+
+        //todo: now what? title -> Credits?
+    }
+
+    IEnumerator StopTheGame()
+    {
+        DestroyAllHitboxes();
         yield return new WaitForEndOfFrame();
 
-        float timescale = 1;
-        while (timescale > 0.5f)
-        {
-            timescale -= 0.1f;
-            yield return new WaitForSeconds(0.1f);
-            Time.timeScale = timescale;
-        }
+        DisableAllCreaturesButThePlayer();
+        yield return new WaitForEndOfFrame();
 
-        Time.timeScale = 0;
-        Debug.Log("Game Over");
+        DisablePlayerControl();
+        yield return new WaitForEndOfFrame();
+
     }
 
 
@@ -47,6 +64,12 @@ public class GameManager : MonoBehaviour
     public void StartNewGame()
     {
         Reset();
+        SceneManager.LoadScene("RoughLayout", LoadSceneMode.Single);
+
+        if (IngameUI.Instance != null)
+        {
+            IngameUI.Instance.FadeScreen.FadeOut(1);
+        }
     }
 
     public void Reset()
@@ -61,11 +84,16 @@ public class GameManager : MonoBehaviour
 
         listOfCreatures.ForEach(creature =>
         {
-            creature.Graphic.SpriteRenderer.enabled = false;
-            creature.enabled = false;
-
+            Destroy(creature.gameObject);
+            //creature.Graphic.SpriteRenderer.enabled = false;
+            //creature.enabled = false;
+            //creature.gameObject.SetActive(false);
         });
 
+    }
+
+    public void DestroyAllHitboxes()
+    {
         List<Hitbox> listOfHitboxes = GameObject.FindObjectsOfType<Hitbox>().ToList();
         listOfHitboxes.ForEach(o => Destroy(o.gameObject));
     }
@@ -78,6 +106,12 @@ public class GameManager : MonoBehaviour
     public IEnumerator ProceedToIncarnate(Creature zCreatureYouWhere, Creature zCreatureYouWillBecome)
     {
         Debug.Log("Incarnate from " + zCreatureYouWhere.name + " to " + zCreatureYouWillBecome.name);
+
+        DestroyAllHitboxes();
+
+        //Health fix
+        zCreatureYouWhere.health = zCreatureYouWhere.maxhealth;
+        zCreatureYouWillBecome.health = zCreatureYouWillBecome.maxhealth;
 
         //Deplete your incarnation energy
         IngameUI.Instance.PlayerIncarnation = 0;

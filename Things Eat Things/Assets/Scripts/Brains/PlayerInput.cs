@@ -72,7 +72,7 @@ public class PlayerInput : Brain
 
     void ClickedScenery(GameObject scenery)
     {
-        //...
+        MoveToPoint(scenery.transform.position);
     }
 
     void ClickedGround(Vector3 position)

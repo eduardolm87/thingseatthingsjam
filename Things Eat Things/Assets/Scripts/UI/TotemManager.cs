@@ -24,4 +24,20 @@ public class TotemManager : MonoBehaviour
     {
         return TotemOrder.IndexOf(Creature.Player.CreatureType);
     }
+
+    public bool isPlayerAtMaximumIncarnation
+    {
+        get
+        {
+            return (NextCreatureToEmbody() == Creature.CREATURES.END);
+        }
+    }
+
+    public Creature.CREATURES EndCreature
+    {
+        get
+        {
+            return TotemOrder.Last();
+        }
+    }
 }

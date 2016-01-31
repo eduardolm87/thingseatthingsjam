@@ -13,7 +13,7 @@ public class Aggressive : Brain
 
     public override void GetInput()
     {
-        if (Creature.Player == null)
+        if (Creature.Player == null || this == null)
             return;
 
 
@@ -55,7 +55,7 @@ public class Aggressive : Brain
         Creature.Locomotor.Stop();
 
         Vector3 attackDirection = Creature.Player.transform.position - transform.position;
-        Hitbox.Shoot(Creature, transform.position, attackDirection, 3,Creature.attackDamage, 1, true); //todo: make this variable
+        Hitbox.Shoot(Creature, transform.position, attackDirection, 3, Creature.attackDamage, 1, true); //todo: make this variable
         Creature.Cooldown = Creature.cooldownAfterAttack;
     }
 

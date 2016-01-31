@@ -15,7 +15,9 @@ public class Creature : MonoBehaviour
     public string DisplayName = "???";
 
     public int maxhealth = 5;
-    int health = 5;
+    
+    [HideInInspector]
+    public int health = 5;
 
     [Range(1f, 4.5f)]
     public float speed = 1;
