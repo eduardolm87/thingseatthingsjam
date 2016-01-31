@@ -41,12 +41,11 @@ public class Sounds : MonoBehaviour {
 		float rnd = Random.value;// + GameManager.Instance.;
 		if( rnd < .2f ){
 			music.PlayOneShot( musics[ kRestMus1 ] );
-		} else
- 		if ( rnd < .4f ){
+		} else if ( rnd < .4f ){
 			music.PlayOneShot(musics[ kRestMus2 ] );
-		} if ( rnd < .6f ){
+		} else if ( rnd < .6f ){
 			music.PlayOneShot(musics[ kRestMus3 ] );
-		} if ( rnd < .8f ){
+		} else if ( rnd < .8f ){
 			music.PlayOneShot(musics[ kRestMus4 ] );
 		} else {
 			music.PlayOneShot(musics[ kMidMus3 ] );
