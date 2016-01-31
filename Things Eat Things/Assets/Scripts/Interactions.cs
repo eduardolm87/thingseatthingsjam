@@ -6,11 +6,11 @@ public class Interactions : MonoBehaviour
     public enum Outcomes { Nothing, CanAttack, CanEmbodyFree };
 
 
-    public static Outcomes GetOutcome(Creature.CREATURES playerType, Creature.CREATURES otherType)
+    public static Outcomes GetOutcome(Creature.CREATURES meType, Creature.CREATURES otherType)
     {
         Outcomes outcome = Outcomes.Nothing;
 
-        switch (playerType)
+        switch (meType)
         {
             case Creature.CREATURES.TinyLight:
                 if (otherType == Creature.CREATURES.Rabbit)

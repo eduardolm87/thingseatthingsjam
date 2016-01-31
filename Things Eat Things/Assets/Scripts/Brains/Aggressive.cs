@@ -91,7 +91,9 @@ public class Aggressive : Brain
 
     bool DoIWantToAttackPlayer()
     {
-        if (Interactions.GetOutcome(Creature.Player.CreatureType, this.Creature.CreatureType) == Interactions.Outcomes.CanAttack)
+        Interactions.Outcomes outcome = Interactions.GetOutcome(this.Creature.CreatureType, Creature.Player.CreatureType);
+
+        if (outcome == Interactions.Outcomes.CanAttack)
             return true;
 
         return false;

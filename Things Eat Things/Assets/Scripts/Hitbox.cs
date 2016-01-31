@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Hitbox : MonoBehaviour
 {
-    public const bool ShowHitbox = true;
+    public const bool ShowHitbox = false;
 
     [HideInInspector]
     public Rigidbody Rigidbody;
