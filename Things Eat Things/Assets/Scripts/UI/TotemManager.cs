@@ -2,11 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.UI;
 
 [System.Serializable]
 public class TotemManager : MonoBehaviour
 {
     public List<Creature.CREATURES> TotemOrder = new List<Creature.CREATURES>();
+    public List<TotemPart> TotemParts = new List<TotemPart>();
+    public Color RevealedPartColor = Color.white;
+    public Color HiddenPartColor = Color.gray;
+
 
     public Creature.CREATURES NextCreatureToEmbody()
     {
@@ -39,5 +44,36 @@ public class TotemManager : MonoBehaviour
         {
             return TotemOrder.Last();
         }
+    }
+
+    public void Refresh()
+    {
+        Reset();
+        int maxTotemIndex = GetCurrentCreatureIndex();
+        for (int i = 0; i <= maxTotemIndex; i++)
+        {
+            Creature.CREATURES currentCreature = TotemOrder[i];
+            Debug.Log("Refreshing " + currentCreature);
+            SetTotemPart(currentCreature, true);
+        }
+    }
+
+    public void SetTotemPart(Creature.CREATURES zTotem, bool zStatus)
+    {
+        TotemPart totem = GetTotemPart(zTotem);
+        if (zStatus)
+            totem.Reveal();
+        else
+            totem.Hide();
+    }
+
+    TotemPart GetTotemPart(Creature.CREATURES zTotem)
+    {
+        return TotemParts.FirstOrDefault(c => c.AssociatedCreature == zTotem);
+    }
+
+    public void Reset()
+    {
+        TotemParts.ForEach(t => t.Hide());
     }
 }

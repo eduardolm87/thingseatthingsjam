@@ -84,6 +84,10 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(1);
 
+        IngameUI.Instance.TotemManager.Reset();
+        IngameUI.Instance.TotemManager.Refresh();
+
+
         IngameUI.Instance.FadeScreen.FadeOut(1);
 
         SpawnPlayerEffect(2);
@@ -160,6 +164,9 @@ public class GameManager : MonoBehaviour
         zCreatureYouWhere.EffectsWhenDestroyed();
         Destroy(zCreatureYouWhere.gameObject);
         yield return new WaitForEndOfFrame();
+
+
+        IngameUI.Instance.TotemManager.Refresh();
 
     }
 }
