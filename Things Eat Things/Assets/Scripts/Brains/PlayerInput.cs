@@ -7,12 +7,11 @@ public class PlayerInput : Brain
 
     void Start()
     {
-        Globals.Init();
     }
 
     void Update()
     {
-        Globals.gCamera.GetComponent<GameCam>().LookAtThis(transform.position);
+        GameManager.Instance.gCamera.GetComponent<GameCam>().LookAtThis(transform.position);
     }
 
     public override void GetInput()
@@ -25,21 +24,21 @@ public class PlayerInput : Brain
 
         if (Input.GetMouseButtonDown(0))
         {
-            Ray ray = Globals.gCamera.GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
+            Ray ray = GameManager.Instance.gCamera.GetComponent<Camera>().ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, 1000))
             {
                 switch (hit.collider.gameObject.layer)
                 {
-                    case Globals.kGroundLayer:
+                    case GameManager.kGroundLayer:
                         ClickedGround(hit.point);
                         break;
 
-                    case Globals.kCreaturesLayer:
+                    case GameManager.kCreaturesLayer:
                         ClickedCreature(hit.collider.gameObject);
                         break;
 
-                    case Globals.kSceneryLayer:
+                    case GameManager.kSceneryLayer:
                         ClickedScenery(hit.collider.gameObject);
                         break;
 

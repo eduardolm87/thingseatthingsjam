@@ -16,7 +16,8 @@ public class GameCam : MonoBehaviour
 
     void FixedUpdate()
     {
-        Vector3 offset = new Vector3(0, Mathf.Sin(-Mathf.Deg2Rad * Globals.gCamTilt), Mathf.Cos(-Mathf.Deg2Rad * Globals.gCamTilt));
+		 transform.rotation = Quaternion.Euler( GameManager.Instance.CamTilt, 0,0 );
+        Vector3 offset = new Vector3(0, Mathf.Sin(-Mathf.Deg2Rad * GameManager.Instance.CamTilt), Mathf.Cos(-Mathf.Deg2Rad * GameManager.Instance.CamTilt));
         offset *= dist;
 
         Vector3 targetPos = targetLookPos - offset;

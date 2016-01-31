@@ -26,6 +26,15 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
+	public float CamTilt = 50;
+
+    public  GameObject gCamera;
+
+    public const int kCreaturesLayer = 9;
+    public const int kSceneryLayer = 8;
+    public const int kGroundLayer = 10;
+
+
     public Hitbox HitboxPrefab;
 
     public Hitbox HunterBulletPrefab;
