@@ -15,7 +15,11 @@ public class EnergyToken : Interactable
         if (!zCreature.isPlayer)
             return;
 
+        if (zCreature.CreatureType == Creature.CREATURES.TinyLight)
+            return;
+
         IngameUI.Instance.PlayerIncarnation += IncarnationRecovery;
+        IngameUI.Instance.TotemManager.Refresh();
 
         //Todo: Effect
         Destroy(gameObject);
