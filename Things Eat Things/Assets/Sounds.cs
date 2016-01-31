@@ -14,6 +14,8 @@ public class Sounds : MonoBehaviour {
 	const int kMidMus3 = 5;
 	const int kWolfSong = 6;
 	const int kWolfGrowl = 7;
+	const int kRestMus3 = 8;
+	const int kRestMus4 = 9;
 
 	float LastEventTime;
 
@@ -37,11 +39,15 @@ public class Sounds : MonoBehaviour {
 	void StartNewMusicTrack()
 	{
 		float rnd = Random.value;// + GameManager.Instance.;
-		if( rnd < .4f ){
+		if( rnd < .2f ){
 			music.PlayOneShot( musics[ kRestMus1 ] );
 		} else
- 		if ( rnd < .8f ){
+ 		if ( rnd < .4f ){
 			music.PlayOneShot(musics[ kRestMus2 ] );
+		} if ( rnd < .6f ){
+			music.PlayOneShot(musics[ kRestMus3 ] );
+		} if ( rnd < .8f ){
+			music.PlayOneShot(musics[ kRestMus4 ] );
 		} else {
 			music.PlayOneShot(musics[ kMidMus3 ] );
 		}
