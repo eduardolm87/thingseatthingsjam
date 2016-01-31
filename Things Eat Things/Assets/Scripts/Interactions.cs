@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Interactions : MonoBehaviour
 {
-    public enum Outcomes { Nothing, CanAttack };
+    public enum Outcomes { Nothing, CanAttack, CanEmbodyFree };
 
 
     public static Outcomes GetOutcome(Creature.CREATURES playerType, Creature.CREATURES otherType)
@@ -12,6 +12,13 @@ public class Interactions : MonoBehaviour
 
         switch (playerType)
         {
+            case Creature.CREATURES.TinyLight:
+                if (otherType == Creature.CREATURES.Rabbit)
+                {
+                    outcome = Outcomes.CanEmbodyFree;
+                }
+                break;
+
             case Creature.CREATURES.Wolf:
                 switch (otherType)
                 {

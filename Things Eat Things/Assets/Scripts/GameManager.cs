@@ -9,11 +9,20 @@ public class GameManager : MonoBehaviour
 {
     #region Singleton
     public static GameManager Instance;
+    public static bool NormalFlow = false;
 
     void Awake()
     {
         Instance = this;
+
+
+
         DontDestroyOnLoad(transform.root);
+
+        if (NormalFlow == true)
+        {
+            GameObject.FindObjectOfType<FadeScreen>().BlackScreen.enabled = true;
+        }
     }
     #endregion
 
@@ -23,15 +32,21 @@ public class GameManager : MonoBehaviour
 
     public GotoPointer Gotopointer;
 
+    void Start()
+    {
+        StartCoroutine(StartNewGame());
+    }
+
     public IEnumerator GameOver()
     {
         yield return StartCoroutine(StopTheGame());
 
+        Debug.Log("Game Over");
+
         IngameUI.Instance.FadeScreen.FadeIn(2);
         yield return new WaitForSeconds(2.5f);
 
-        Debug.Log("Game Over");
-        //todo: now what? title?
+        ToMainMenu();
     }
 
     public IEnumerator WinTheGame()
@@ -42,7 +57,7 @@ public class GameManager : MonoBehaviour
         IngameUI.Instance.FadeScreen.FadeIn(2);
         yield return new WaitForSeconds(2.5f);
 
-        //todo: now what? title -> Credits?
+        ToMainMenu();
     }
 
     IEnumerator StopTheGame()
@@ -55,26 +70,37 @@ public class GameManager : MonoBehaviour
 
         DisablePlayerControl();
         yield return new WaitForEndOfFrame();
-
     }
 
 
 
 
-    public void StartNewGame()
+    public IEnumerator StartNewGame()
     {
-        Reset();
-        SceneManager.LoadScene("RoughLayout", LoadSceneMode.Single);
+        PlayerInput.AcceptInput = false;
 
-        if (IngameUI.Instance != null)
-        {
-            IngameUI.Instance.FadeScreen.FadeOut(1);
-        }
+        IngameUI.Instance.FadeScreen.BlackScreen.enabled = true;
+        IngameUI.Instance.FadeScreen.BlackScreen.color = Color.black;
+
+        yield return new WaitForSeconds(1);
+
+        IngameUI.Instance.FadeScreen.FadeOut(1);
+
+        SpawnPlayerEffect(2);
+
+        yield return new WaitForSeconds(2.25f);
+
+        PlayerInput.AcceptInput = true;
     }
 
-    public void Reset()
+    void SpawnPlayerEffect(float zTime)
     {
-        Time.timeScale = 1;
+        iTween.ScaleFrom(Creature.Player.gameObject, iTween.Hash("scale", Vector3.zero, "time", zTime, "easetype", iTween.EaseType.easeOutQuad));
+    }
+
+    void ToMainMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 
     public void DisableAllCreaturesButThePlayer()

@@ -3,6 +3,8 @@ using System.Collections;
 
 public class PlayerInput : Brain
 {
+    public static bool AcceptInput = true;
+
     void Start()
     {
         Globals.Init();
@@ -15,6 +17,9 @@ public class PlayerInput : Brain
 
     public override void GetInput()
     {
+        if (!AcceptInput)
+            return;
+
         if (Creature.Locomotor.InAir)
             return;
 
@@ -51,22 +56,28 @@ public class PlayerInput : Brain
 
     void ClickedCreature(GameObject creature)
     {
-        //todo: Interact with the creature if the creature is able to be interacted by you. If not, just move towards it
+        GamePointer.Instance.Text.text = "";
         Creature otherCreature = creature.GetComponent<Creature>();
         if (otherCreature != null)
         {
             if (Creature.isPlayer && !otherCreature.isPlayer)
             {
                 Interactions.Outcomes outcome = Interactions.GetOutcome(Creature.CreatureType, otherCreature.CreatureType);
-                if (outcome == Interactions.Outcomes.CanAttack)
+                switch (outcome)
                 {
-                    TryToAttackCreature(otherCreature);
+                    case Interactions.Outcomes.CanAttack:
+                        TryToAttackCreature(otherCreature);
+                        break;
+                    case Interactions.Outcomes.CanEmbodyFree:
+                        if (Vector3.Distance(transform.position, otherCreature.transform.position) < Creature.DistanceToEmbodyWhenTinyLight)
+                            GameManager.Instance.StartCoroutine(GameManager.Instance.ProceedToIncarnate(this.Creature, otherCreature));
+                        break;
                 }
             }
         }
 
         Creature.Locomotor.TargetPosition = creature.transform.position;
-        GamePointer.Instance.Text.text = "";
+
     }
 
 

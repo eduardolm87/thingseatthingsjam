@@ -16,12 +16,11 @@ public class Aggressive : Brain
         if (Creature.Player == null || this == null)
             return;
 
-
         base.GetInput();
 
         distanceToPlayer = Vector3.Distance(Creature.Player.transform.position, this.transform.position);
 
-        if (CanISeePlayer())
+        if (DoIWantToAttackPlayer() && CanISeePlayer())
         {
             if (AmIInAttackDistanceOfPlayer())
             {
@@ -88,6 +87,14 @@ public class Aggressive : Brain
         {
             return true;
         }
+    }
+
+    bool DoIWantToAttackPlayer()
+    {
+        if (Interactions.GetOutcome(Creature.Player.CreatureType, this.Creature.CreatureType) == Interactions.Outcomes.CanAttack)
+            return true;
+
+        return false;
     }
 
     void MoveToRandomPosition()

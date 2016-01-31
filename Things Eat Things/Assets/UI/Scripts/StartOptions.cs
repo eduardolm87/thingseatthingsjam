@@ -76,7 +76,8 @@ public class StartOptions : MonoBehaviour {
 
         //Load the selected scene, by scene index number in build settings
         //Application.LoadLevel (sceneToStart); Legacy. 
-        UnityEngine.SceneManagement.SceneManager.LoadScene(sceneToStart);
+        GameManager.NormalFlow = true;
+        UnityEngine.SceneManagement.SceneManager.LoadScene(sceneToStart, UnityEngine.SceneManagement.LoadSceneMode.Single);
         //menuButtons.SetActive(false);
     }
 

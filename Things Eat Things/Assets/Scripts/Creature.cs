@@ -5,6 +5,9 @@ public class Creature : MonoBehaviour
 {
     public enum CREATURES { TinyLight, Rabbit, Wolf, Hunter, END };
 
+    public const float DistanceToEmbodyWhenTinyLight = 2;
+
+
     public static Creature Player;
 
     public const float HurtingTime = 0.5f;
@@ -15,7 +18,7 @@ public class Creature : MonoBehaviour
     public string DisplayName = "???";
 
     public int maxhealth = 5;
-    
+
     [HideInInspector]
     public int health = 5;
 
@@ -184,6 +187,9 @@ public class Creature : MonoBehaviour
 
     void InflictDamage(int zQuantity, Hitbox zSource = null)
     {
+        if (CreatureType == CREATURES.TinyLight)
+            return;
+
         health = Mathf.Clamp(health - zQuantity, 0, int.MaxValue);
         Debug.Log(name + " loses " + zQuantity + " health  (" + health + "/" + maxhealth + ")");
         if (health < 1)
@@ -249,14 +255,21 @@ public class Creature : MonoBehaviour
         {
             case Interactions.Outcomes.CanAttack:
                 if (Player.CreatureType == CREATURES.Hunter)
-                    suggestion = "Shoot";
+                    suggestion = "Shoot " + zOtherCreature.DisplayName;
                 else
-                    suggestion = "Attack";
+                    suggestion = "Attack " + zOtherCreature.DisplayName;
 
                 break;
 
+            case Interactions.Outcomes.CanEmbodyFree:
+                if (Vector3.Distance(Creature.Player.transform.position, zOtherCreature.transform.position) < DistanceToEmbodyWhenTinyLight)
+                    suggestion = "Embody " + zOtherCreature.DisplayName;
+                else
+                    suggestion = "Embody " + zOtherCreature.DisplayName + " (too far)";
+                break;
+
             default:
-                suggestion = "<color=gray>Move to " + zOtherCreature.name + "</color>";
+                suggestion = "Move to " + zOtherCreature.DisplayName + "";
                 break;
         }
 
